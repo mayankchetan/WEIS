@@ -207,7 +207,7 @@ class DLCGenerator(object):
         return wind_speeds, wind_seeds, wave_seeds, wind_heading, wave_Hs, wave_Tp, wave_gamma, wave_heading, probabilities
 
     def generate(self, label, options):
-        known_dlcs = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 5.1, 6.1, 6.3, 6.4, 6.5, 12.1]
+        known_dlcs = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 5.1, 6.1, 6.3, 6.4, 6.5, 12.1, 12.2]
 
         # Get extreme wind speeds
         self.IECwind()
@@ -888,6 +888,76 @@ class DLCGenerator(object):
 
             self.cases.append(idlc)
 
+    def generate_12p2(self, options):
+        # Parked (standing still or idling) - extreme wind model 50-year return period - ultimate loads
+        # options['wind_speed'] = [50,50]  # set dummy, so wind seeds are correct
+
+        # Find the inputs that is provided by the user!
+
+        # get the wind or create based on the turbine parameters
+        wind_speed = self.get_wind_speeds(options)
+
+        # check yaw misalignment
+        if 'yaw_misalign' in options:
+            yaw_misalign = options['yaw_misalign']
+        else: # default
+            yaw_misalign = [0]
+
+        # check azimuth angles
+        if 'azimuth_angles' in options:
+            azimuth_angle = options['azimuth_angles']
+        else: # default
+            azimuth_angle = [0]
+
+        # if more than one seed is provided, use them, otherwise create them
+        # if 'wind_seeds' in options:
+        #     wind_seeds = options['wind_seeds']
+        # else:
+        #     wind_speeds, wind_seeds = self.get_wind_seeds(options, wind_speeds)
+
+        # meshgrid the wind speeds, yaw misalignment and azimuth angles
+        wind_speeds, yaw_misaligns, azimuth_angles = np.meshgrid(wind_speed, yaw_misalign, azimuth_angle)
+
+        # straighten the arrays
+        wind_speeds = wind_speeds.flatten()
+        yaw_misaligns = yaw_misaligns.flatten()
+        azimuth_angles = azimuth_angles.flatten()
+
+        # Check if seeds are provided
+        if len(options['wind_seed']) > 1 and len(options['wind_seed']) != len(wind_speeds):
+            raise Exception("The vector of wind_seeds must have either length=1 or the same length of wind speeds")
+        elif len(options['wind_seed']) == 1:
+            wind_seeds = options['wind_seed'] * len(wind_speeds)
+        else:
+            wind_seeds = self.rng_wind.integers(2147483648, size=options['n_seeds']*len(wind_speeds), dtype=int)            
+
+
+        # Counter for wind seed
+        i_WiSe=0
+        for wind in wind_speeds:
+            idlc = DLCInstance(options=options)
+            # if idlc.URef < 0:   # default is -1, this allows us to set custom V_50
+            #     idlc.URef = self.V_e50
+            idlc.URef = wind
+            idlc.yaw_misalign = yaw_misaligns[i_WiSe]
+            idlc.RandSeed1 = wind_seeds[i_WiSe]
+            if options['turbulent_wind']['flag'] == True:
+                idlc.IEC_WindType = '1EWM50' #self.wind_speed_class_num + 'EWM50'
+                idlc.turbulent_wind = True
+            else:
+                idlc.IEC_WindType = 'Custom'
+                idlc.turbulent_wind = False
+            if idlc.turbine_status == 'operating':
+                idlc.turbine_status = 'parked-still'
+            idlc.label = '12.2'
+            if options['analysis_time'] > 0:
+                idlc.analysis_time = options['analysis_time']
+            if options['transient_time'] >= 0:
+                idlc.transient_time = options['transient_time']
+            self.cases.append(idlc)
+
+            if len(wind_seeds)>1:
+                i_WiSe+=1
 
 if __name__ == "__main__":
 

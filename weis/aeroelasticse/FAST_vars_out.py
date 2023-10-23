@@ -5,14 +5,14 @@
 ElastoDyn = {}
 
 # Blade 1 Tip Motions
-ElastoDyn['TipDxc1']          = True      # (m); Blade 1 out-of-plane tip deflection (relative to the undeflected position); Directed along the xc1-axis
+ElastoDyn['TipDxc1']          = False      # (m); Blade 1 out-of-plane tip deflection (relative to the undeflected position); Directed along the xc1-axis
 ElastoDyn['OoPDefl1']         = False     # (m); Blade 1 out-of-plane tip deflection (relative to the undeflected position); Directed along the xc1-axis
-ElastoDyn['TipDyc1']          = True      # (m); Blade 1 in-plane tip deflection (relative to the undeflected position); Directed along the yc1-axis
+ElastoDyn['TipDyc1']          = False      # (m); Blade 1 in-plane tip deflection (relative to the undeflected position); Directed along the yc1-axis
 ElastoDyn['IPDefl1']          = False     # (m); Blade 1 in-plane tip deflection (relative to the undeflected position); Directed along the yc1-axis
-ElastoDyn['TipDzc1']          = True      # (m); Blade 1 axial tip deflection (relative to the undeflected position); Directed along the zc1- and zb1-axes
-ElastoDyn['TipDzb1']          = True      # (m); Blade 1 axial tip deflection (relative to the undeflected position); Directed along the zc1- and zb1-axes
-ElastoDyn['TipDxb1']          = True      # (m); Blade 1 flapwise tip deflection (relative to the undeflected position); Directed along the xb1-axis
-ElastoDyn['TipDyb1']          = True      # (m); Blade 1 edgewise tip deflection (relative to the undeflected position); Directed along the yb1-axis
+ElastoDyn['TipDzc1']          = False      # (m); Blade 1 axial tip deflection (relative to the undeflected position); Directed along the zc1- and zb1-axes
+ElastoDyn['TipDzb1']          = False      # (m); Blade 1 axial tip deflection (relative to the undeflected position); Directed along the zc1- and zb1-axes
+ElastoDyn['TipDxb1']          = False      # (m); Blade 1 flapwise tip deflection (relative to the undeflected position); Directed along the xb1-axis
+ElastoDyn['TipDyb1']          = False      # (m); Blade 1 edgewise tip deflection (relative to the undeflected position); Directed along the yb1-axis
 ElastoDyn['TipALxb1']         = False     # (m/s^2); Blade 1 local flapwise tip acceleration (absolute); Directed along the local xb1-axis
 ElastoDyn['TipALyb1']         = False     # (m/s^2); Blade 1 local edgewise tip acceleration (absolute); Directed along the local yb1-axis
 ElastoDyn['TipALzb1']         = False     # (m/s^2); Blade 1 local axial tip acceleration (absolute); Directed along the local zb1-axis
@@ -28,14 +28,14 @@ ElastoDyn['TwrClrnc1']        = False     # (m); Blade 1 tip-to-tower clearance 
 ElastoDyn['Tip2Twr1']         = False     # (m); Blade 1 tip-to-tower clearance estimate. This is computed as the perpendicular distance from the yaw axis to the tip of blade 1 when the blade tip is below the yaw bearing. When the tip of blade 1 is above the yaw bearing, it is computed as the absolute distance from the yaw bearing to the blade tip. Please note that you should reduce this value by the tower radius to obtain the actual tower clearance.; N/A
 
 # Blade 2 Tip Motions
-ElastoDyn['TipDxc2']          = True      # (m); Blade 2 out-of-plane tip deflection (relative to the pitch axis); Directed along the xc2-axis
+ElastoDyn['TipDxc2']          = False      # (m); Blade 2 out-of-plane tip deflection (relative to the pitch axis); Directed along the xc2-axis
 ElastoDyn['OoPDefl2']         = False     # (m); Blade 2 out-of-plane tip deflection (relative to the pitch axis); Directed along the xc2-axis
-ElastoDyn['TipDyc2']          = True      # (m); Blade 2 in-plane tip deflection (relative to the pitch axis); Directed along the yc2-axis
+ElastoDyn['TipDyc2']          = False      # (m); Blade 2 in-plane tip deflection (relative to the pitch axis); Directed along the yc2-axis
 ElastoDyn['IPDefl2']          = False     # (m); Blade 2 in-plane tip deflection (relative to the pitch axis); Directed along the yc2-axis
-ElastoDyn['TipDzc2']          = True      # (m); Blade 2 axial tip deflection (relative to the pitch axis); Directed along the zc2- and zb2-axes
-ElastoDyn['TipDzb2']          = True      # (m); Blade 2 axial tip deflection (relative to the pitch axis); Directed along the zc2- and zb2-axes
-ElastoDyn['TipDxb2']          = True      # (m); Blade 2 flapwise tip deflection (relative to the pitch axis); Directed along the xb2-axis
-ElastoDyn['TipDyb2']          = True      # (m); Blade 2 edgewise tip deflection (relative to the pitch axis); Directed along the yb2-axis
+ElastoDyn['TipDzc2']          = False      # (m); Blade 2 axial tip deflection (relative to the pitch axis); Directed along the zc2- and zb2-axes
+ElastoDyn['TipDzb2']          = False      # (m); Blade 2 axial tip deflection (relative to the pitch axis); Directed along the zc2- and zb2-axes
+ElastoDyn['TipDxb2']          = False      # (m); Blade 2 flapwise tip deflection (relative to the pitch axis); Directed along the xb2-axis
+ElastoDyn['TipDyb2']          = False      # (m); Blade 2 edgewise tip deflection (relative to the pitch axis); Directed along the yb2-axis
 ElastoDyn['TipALxb2']         = False     # (m/s^2); Blade 2 local flapwise tip acceleration (absolute); Directed along the local xb2-axis
 ElastoDyn['TipALyb2']         = False     # (m/s^2); Blade 2 local edgewise tip acceleration (absolute); Directed along the local yb2-axis
 ElastoDyn['TipALzb2']         = False     # (m/s^2); Blade 2 local axial tip acceleration (absolute); Directed along the local zb2-axis
@@ -51,14 +51,14 @@ ElastoDyn['TwrClrnc2']        = False     # (m); Blade 2 tip-to-tower clearance 
 ElastoDyn['Tip2Twr2']         = False     # (m); Blade 2 tip-to-tower clearance estimate. This is computed as the perpendicular distance from the yaw axis to the tip of blade 1 when the blade tip is below the yaw bearing. When the tip of blade 1 is above the yaw bearing, it is computed as the absolute distance from the yaw bearing to the blade tip. Please note that you should reduce this value by the tower radius to obtain the actual tower clearance.; N/A
 
 # Blade 3 Tip Motions
-ElastoDyn['TipDxc3']          = True      # (m); Blade 3 out-of-plane tip deflection (relative to the pitch axis); Directed along the xc3-axis
+ElastoDyn['TipDxc3']          = False      # (m); Blade 3 out-of-plane tip deflection (relative to the pitch axis); Directed along the xc3-axis
 ElastoDyn['OoPDefl3']         = False     # (m); Blade 3 out-of-plane tip deflection (relative to the pitch axis); Directed along the xc3-axis
-ElastoDyn['TipDyc3']          = True      # (m); Blade 3 in-plane tip deflection (relative to the pitch axis); Directed along the yc3-axis
+ElastoDyn['TipDyc3']          = False      # (m); Blade 3 in-plane tip deflection (relative to the pitch axis); Directed along the yc3-axis
 ElastoDyn['IPDefl3']          = False     # (m); Blade 3 in-plane tip deflection (relative to the pitch axis); Directed along the yc3-axis
-ElastoDyn['TipDzc3']          = True      # (m); Blade 3 axial tip deflection (relative to the pitch axis); Directed along the zc3- and zb3-axes
-ElastoDyn['TipDzb3']          = True      # (m); Blade 3 axial tip deflection (relative to the pitch axis); Directed along the zc3- and zb3-axes
-ElastoDyn['TipDxb3']          = True      # (m); Blade 3 flapwise tip deflection (relative to the pitch axis); Directed along the xb3-axis
-ElastoDyn['TipDyb3']          = True      # (m); Blade 3 edgewise tip deflection (relative to the pitch axis); Directed along the yb3-axis
+ElastoDyn['TipDzc3']          = False      # (m); Blade 3 axial tip deflection (relative to the pitch axis); Directed along the zc3- and zb3-axes
+ElastoDyn['TipDzb3']          = False      # (m); Blade 3 axial tip deflection (relative to the pitch axis); Directed along the zc3- and zb3-axes
+ElastoDyn['TipDxb3']          = False      # (m); Blade 3 flapwise tip deflection (relative to the pitch axis); Directed along the xb3-axis
+ElastoDyn['TipDyb3']          = False      # (m); Blade 3 edgewise tip deflection (relative to the pitch axis); Directed along the yb3-axis
 ElastoDyn['TipALxb3']         = False     # (m/s^2); Blade 3 local flapwise tip acceleration (absolute); Directed along the local xb3-axis
 ElastoDyn['TipALyb3']         = False     # (m/s^2); Blade 3 local edgewise tip acceleration (absolute); Directed along the local yb3-axis
 ElastoDyn['TipALzb3']         = False     # (m/s^2); Blade 3 local axial tip acceleration (absolute); Directed along the local zb3-axis

@@ -3007,7 +3007,7 @@ properties:
                         DLC:
                             type: string
                             default: '1.1'
-                            enum: ['1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '5.1', '6.1', '6.2', '6.3', '6.4', '6.5', '12.1', 'Custom']
+                            enum: ['1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '5.1', '6.1', '6.2', '6.3', '6.4', '6.5', '12.1','12.2', 'Custom']
                             description: IEC design load case to run. The DLCs currently supported are 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 5.1, 6.1, 6.3, and 6.4
                         wind_speed:
                             type: array
@@ -3070,6 +3070,15 @@ properties:
                         yaw_misalign:
                             type: array
                             description: Alignment of the nacelle with respect to north. This array must currently have either length=1, i.e. one constant value, or the same length of the array wind_speed. Default depends on DLC, specified in dlc_generator.
+                            items:
+                                type: number
+                                unit: deg
+                                minItems: 1
+                                minimum: -180.0
+                                maximum: 180.0
+                        azimuth_angles:
+                            type: array
+                            description: azimuth initial conditions to use with respect to Az=0 for Blade 1. This array must currently have either length=1, i.e. one constant value, or the same length of the array wind_speed. Default depends on DLC, specified in dlc_generator.
                             items:
                                 type: number
                                 unit: deg

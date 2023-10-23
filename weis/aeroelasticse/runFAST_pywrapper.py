@@ -365,7 +365,8 @@ class runFAST_pywrapper_batch(object):
             dam[_name] = _dam
             ct.append(_ct)
             
-        summary_stats, extreme_table, DELs, Damage = self.la.post_process(ss, et, dl, dam)
+        # summary_stats, extreme_table, DELs, Damage = self.la.post_process(ss, et, dl, dam)
+        summary_stats, extreme_table, DELs, Damage = [], [], [], []
 
         return summary_stats, extreme_table, DELs, Damage, ct
 

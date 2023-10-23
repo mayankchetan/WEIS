@@ -157,6 +157,7 @@ class InputReader_OpenFAST(object):
         self.fst_vt['Fst']['CompInflow'] = int(f.readline().split()[0])
         self.fst_vt['Fst']['CompAero'] = int(f.readline().split()[0])
         self.fst_vt['Fst']['CompServo'] = int(f.readline().split()[0])
+        # self.fst_vt['Fst']['CompSeaSt'] = int(f.readline().split()[0])
         self.fst_vt['Fst']['CompHydro'] = int(f.readline().split()[0])
         self.fst_vt['Fst']['CompSub'] = int(f.readline().split()[0])
         self.fst_vt['Fst']['CompMooring'] = int(f.readline().split()[0])
@@ -184,6 +185,7 @@ class InputReader_OpenFAST(object):
         self.fst_vt['Fst']['InflowFile'] = f.readline().split()[0][1:-1]
         self.fst_vt['Fst']['AeroFile'] = f.readline().split()[0][1:-1]
         self.fst_vt['Fst']['ServoFile'] = f.readline().split()[0][1:-1]
+        # self.fst_vt['Fst']['SeaStFile'] = f.readline().split()[0][1:-1]
         self.fst_vt['Fst']['HydroFile'] = f.readline().split()[0][1:-1]
         self.fst_vt['Fst']['SubFile'] = f.readline().split()[0][1:-1]
         self.fst_vt['Fst']['MooringFile'] = f.readline().split()[0][1:-1]
@@ -2484,9 +2486,15 @@ class InputReader_OpenFAST(object):
         self.read_ElastoDyn(ed_file)
         if not os.path.isabs(self.fst_vt['ElastoDyn']['BldFile1']):
             ed_blade_file = os.path.join(os.path.dirname(ed_file), self.fst_vt['ElastoDyn']['BldFile1'])
-        self.read_ElastoDynBlade(ed_blade_file)
+        else:
+            ed_blade_file = self.fst_vt['ElastoDyn']['BldFile1']
+        if self.fst_vt['Fst']['CompElast'] == 1:
+            self.read_ElastoDynBlade(ed_blade_file)
+        
         if not os.path.isabs(self.fst_vt['ElastoDyn']['TwrFile']):
             ed_tower_file = os.path.join(os.path.dirname(ed_file), self.fst_vt['ElastoDyn']['TwrFile'])
+        else:
+            ed_tower_file = self.fst_vt['ElastoDyn']['TwrFile']
         self.read_ElastoDynTower(ed_tower_file)
         self.read_InflowWind()
         # AeroDyn version selection
