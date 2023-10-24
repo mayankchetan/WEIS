@@ -861,8 +861,8 @@ class InputReader_OpenFAST(object):
         f.readline()
         self.fst_vt['AeroDyn15']['UAMod']                  = int(f.readline().split()[0])
         self.fst_vt['AeroDyn15']['FLookup']                = bool_read(f.readline().split()[0])
-        # self.fst_vt['AeroDyn15']['UAStartRad']             = float_read(f.readline().split()[0])
-        # self.fst_vt['AeroDyn15']['UAEndRad']               = float_read(f.readline().split()[0])
+        self.fst_vt['AeroDyn15']['UAStartRad']             = float_read(f.readline().split()[0])
+        self.fst_vt['AeroDyn15']['UAEndRad']               = float_read(f.readline().split()[0])
 
         # Airfoil Information
         f.readline()
@@ -2285,6 +2285,7 @@ class InputReader_OpenFAST(object):
         f.readline()
         # MEMBER OUTPUT LIST
         self.fst_vt['SubDyn']['NMOutputs']     = int_read(f.readline().split()[0])
+        print(f"******** = {self.fst_vt['SubDyn']['NMOutputs']}")
         self.fst_vt['SubDyn']['MemberID_out']  = [None]*self.fst_vt['SubDyn']['NMOutputs']
         self.fst_vt['SubDyn']['NOutCnt']       = [None]*self.fst_vt['SubDyn']['NMOutputs']
         self.fst_vt['SubDyn']['NodeCnt']       = [None]*self.fst_vt['SubDyn']['NMOutputs']
@@ -2300,7 +2301,7 @@ class InputReader_OpenFAST(object):
         data = f.readline()
         while data.split()[0] != 'END':
             channels = data.split('"')
-            channel_list = channels[1].split(',')
+            channel_list = channels[0].split(',')
             self.set_outlist(self.fst_vt['outlist']['SubDyn'], channel_list)
             data = f.readline()
             

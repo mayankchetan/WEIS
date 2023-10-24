@@ -2,7 +2,7 @@ General:
     verbosity: False  # When set to True, the code prints to screen many infos
     openfast_configuration:
         OF_run_fst: IEA15
-        OF_run_dir: outputs/02_control_opt
+        OF_run_dir: outputs/02_control_opt_MC
         save_timeseries: True
         save_iterations: True
         use_exe: True
@@ -28,22 +28,22 @@ WISDEM:
 Level3: # Options for WEIS fidelity level 3 = nonlinear time domain
     flag: True
     from_openfast: True
-    openfast_file: IEA-15-240-RWT-UMaineSemi.fst
-    openfast_dir: examples/01_aeroelasticse/OpenFAST_models/IEA-15-240-RWT/IEA-15-240-RWT-UMaineSemi
+    openfast_file: IEA-15-240-RWT-Monopile.fst
+    openfast_dir: /projects/bar/mchetan/projects/instability/toDel/iea15/OpenFAST/IEA-15-240-RWT-Monopile
     AeroDyn:
         WakeMod: 2
     
 ROSCO:
     flag: True
     tuning_yaml: ROSCO/Tune_Cases/IEA15MW.yaml
-    Kp_float: -10
+    # Kp_float: -10
 
 
 DLC_driver:
     DLCs:
         - DLC: "1.1"
           wind_speed: [16]
-          n_seeds: 1
+          n_seeds: 2
           analysis_time: 10.
           transient_time: 0.1
           turbulent_wind:
