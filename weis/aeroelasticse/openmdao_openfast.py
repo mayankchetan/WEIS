@@ -160,7 +160,7 @@ class FASTLoadCases(ExplicitComponent):
 
             # These next ones are needed for SubDyn
             n_height_mon = n_full_mon = 0
-            if modopt['flags']['offshore']:
+            if False: #modopt['flags']['offshore']:
                 self.add_input('transition_piece_mass', val=0.0, units='kg')
                 self.add_input('transition_piece_I', val=np.zeros(3), units='kg*m**2')
                 
@@ -869,7 +869,7 @@ class FASTLoadCases(ExplicitComponent):
         # Update fst_vt nested dictionary with data coming from WISDEM
 
         # Comp flags in main input
-        if modopt['flags']['offshore']:
+        if False: #modopt['flags']['offshore']:
             fst_vt['Fst']['CompHydro'] = 1  # Use HydroDyn if not set in modeling inputs 
 
         # If there's mooring and  CompMooring not set in modeling inputs
@@ -1256,7 +1256,7 @@ class FASTLoadCases(ExplicitComponent):
             fst_vt['SubDyn']['XsecT'] = inputs["platform_elem_t"][:n_members]
 
         # SubDyn inputs- offshore generic
-        if modopt['flags']['offshore']:
+        if False: #modopt['flags']['offshore']:
             mgrav = 0.0 if not modopt['flags']['monopile'] else float(inputs['gravity_foundation_mass'])
             if fst_vt['SubDyn']['SDdeltaT']<=-999.0: fst_vt['SubDyn']['SDdeltaT'] = "DEFAULT"
             fst_vt['SubDyn']['GuyanDamp'] = np.vstack( tuple([fst_vt['SubDyn']['GuyanDamp'+str(m+1)] for m in range(6)]) )
@@ -1343,7 +1343,7 @@ class FASTLoadCases(ExplicitComponent):
                 t_coarse = np.append(t_coarse, it_coarse)
                 joints_xyz = np.append(joints_xyz, inode_xyz, axis=0)
                 
-        if modopt['flags']['offshore']:
+        if False: #modopt['flags']['offshore']:
             fst_vt['HydroDyn']['WtrDens'] = float(inputs['rho_water'])
             fst_vt['HydroDyn']['WtrDpth'] = float(inputs['water_depth'])
             fst_vt['HydroDyn']['MSL2SWL'] = 0.0
@@ -1671,7 +1671,7 @@ class FASTLoadCases(ExplicitComponent):
             channels_out += ['BLFLAP1', 'BLFLAP2', 'BLFLAP3']
 
         # Channels for wave outputs
-        if modopt['flags']['offshore']:
+        if False: #modopt['flags']['offshore']:
             channels_out += ["Wave1Elev","WavesF1xi","WavesF1zi","WavesM1yi"]
             channels_out += ["WavesF2xi","WavesF2yi","WavesF2zi","WavesM2xi","WavesM2yi","WavesM2zi"]
 

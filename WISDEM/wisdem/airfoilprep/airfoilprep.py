@@ -159,6 +159,10 @@ class Polar(object):
             1.0 / m * (1.6 * chord_over_r / 0.1267 * (a - chord_over_r**expon_d) / (b + chord_over_r**expon_d) - 1)
         )
 
+        # Force fcl to stay non-negative
+        if fcl < 0.:
+            fcl = 0.
+
         # not sure where this adjustment comes from (besides AirfoilPrep spreadsheet of course)
         adj = ((np.pi / 2 - alpha) / (np.pi / 2 - alpha_max_corr)) ** 2
         adj[alpha <= alpha_max_corr] = 1.0

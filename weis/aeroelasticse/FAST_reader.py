@@ -157,7 +157,7 @@ class InputReader_OpenFAST(object):
         self.fst_vt['Fst']['CompInflow'] = int(f.readline().split()[0])
         self.fst_vt['Fst']['CompAero'] = int(f.readline().split()[0])
         self.fst_vt['Fst']['CompServo'] = int(f.readline().split()[0])
-        # self.fst_vt['Fst']['CompSeaSt'] = int(f.readline().split()[0])
+        self.fst_vt['Fst']['CompSeaSt'] = int(f.readline().split()[0])
         self.fst_vt['Fst']['CompHydro'] = int(f.readline().split()[0])
         self.fst_vt['Fst']['CompSub'] = int(f.readline().split()[0])
         self.fst_vt['Fst']['CompMooring'] = int(f.readline().split()[0])
@@ -185,7 +185,7 @@ class InputReader_OpenFAST(object):
         self.fst_vt['Fst']['InflowFile'] = f.readline().split()[0][1:-1]
         self.fst_vt['Fst']['AeroFile'] = f.readline().split()[0][1:-1]
         self.fst_vt['Fst']['ServoFile'] = f.readline().split()[0][1:-1]
-        # self.fst_vt['Fst']['SeaStFile'] = f.readline().split()[0][1:-1]
+        self.fst_vt['Fst']['SeaStFile'] = f.readline().split()[0][1:-1]
         self.fst_vt['Fst']['HydroFile'] = f.readline().split()[0][1:-1]
         self.fst_vt['Fst']['SubFile'] = f.readline().split()[0][1:-1]
         self.fst_vt['Fst']['MooringFile'] = f.readline().split()[0][1:-1]
@@ -863,8 +863,8 @@ class InputReader_OpenFAST(object):
         f.readline()
         self.fst_vt['AeroDyn15']['UAMod']                  = int(f.readline().split()[0])
         self.fst_vt['AeroDyn15']['FLookup']                = bool_read(f.readline().split()[0])
-        # self.fst_vt['AeroDyn15']['UAStartRad']             = float_read(f.readline().split()[0])
-        # self.fst_vt['AeroDyn15']['UAEndRad']               = float_read(f.readline().split()[0])
+        self.fst_vt['AeroDyn15']['UAStartRad']             = float_read(f.readline().split()[0])
+        self.fst_vt['AeroDyn15']['UAEndRad']               = float_read(f.readline().split()[0])
 
         # Airfoil Information
         f.readline()

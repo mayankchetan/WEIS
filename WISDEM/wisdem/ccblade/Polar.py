@@ -210,6 +210,10 @@ class Polar(object):
                 / cl_slope
                 * (1.6 * chord_over_r / 0.1267 * (a - chord_over_r**expon) / (b + chord_over_r**expon) - 1)
             )
+            # Force fcl to stay non-negative
+            if fcl < 0.:
+                fcl = 0.
+
         elif lift_method == "Snel":
             # Snel correction
             fcl = 3.0 * chord_over_r**2.0
