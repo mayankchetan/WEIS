@@ -23,5 +23,5 @@ Level1:
     max_freq: 2.0
     potential_bem_members: [spar]
     
-Level3:
+OpenFAST:
     flag: False

@@ -28,7 +28,7 @@ Level1:
     min_freq: 0.1
     max_freq: 1.0
     
-Level3: # Options for WEIS fidelity level 3 = nonlinear time domain
+OpenFAST: # Options for WEIS fidelity level 3 = nonlinear time domain
     flag: True
     simulation:
         DT: 0.0125

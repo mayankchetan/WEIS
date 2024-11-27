@@ -40,7 +40,7 @@ def run_weis(fname_wt_input, fname_modeling_options, fname_opt_options, geometry
 
         # Define the color map for the parallelization, determining the maximum number of parallel finite difference (FD)
         # evaluations based on the number of design variables (DV). OpenFAST on/off changes things.
-        if modeling_options['Level3']['flag']:
+        if modeling_options['OpenFAST']['flag']:
 
             # If we are running an optimization method that doesn't use finite differencing, set the number of DVs to 1
             if not (opt_options['driver']['design_of_experiments']['flag']) and (opt_options['driver']['optimization']['solver'] in evolutionary_methods):
@@ -96,7 +96,7 @@ def run_weis(fname_wt_input, fname_modeling_options, fname_opt_options, geometry
             color_i = 0
         else:
             n_FD = max([n_FD, 1])
-            if modeling_options['Level3']['flag'] == True and modeling_options['Level3']['AeroDyn']['WakeMod'] == 3:
+            if modeling_options['OpenFAST']['flag'] == True and modeling_options['OpenFAST']['AeroDyn']['WakeMod'] == 3:
                 olaf = True
             else:
                 olaf = False
@@ -126,7 +126,7 @@ def run_weis(fname_wt_input, fname_modeling_options, fname_opt_options, geometry
     if color_i == 0: # the top layer of cores enters, the others sit and wait to run openfast simulations
         # if MPI and opt_options['driver']['optimization']['flag']:
         if MPI:
-            if modeling_options['Level3']['flag'] or modeling_options['Level2']['flag']:
+            if modeling_options['OpenFAST']['flag'] or modeling_options['Level2']['flag']:
                 # Parallel settings for OpenFAST
                 modeling_options['General']['openfast_configuration']['mpi_run'] = True
                 modeling_options['General']['openfast_configuration']['mpi_comm_map_down'] = comm_map_down
@@ -176,7 +176,7 @@ def run_weis(fname_wt_input, fname_modeling_options, fname_opt_options, geometry
             wt_opt = assign_TMD_values(wt_opt, wt_init, opt_options)
 
         wt_opt = myopt.set_initial(wt_opt, wt_init)
-        if modeling_options['Level3']['flag']:
+        if modeling_options['OpenFAST']['flag']:
             wt_opt = myopt.set_initial_weis(wt_opt)
 
         # If the user provides values in geometry_override, they overwrite
@@ -222,7 +222,7 @@ def run_weis(fname_wt_input, fname_modeling_options, fname_opt_options, geometry
             froot_out = os.path.join(folder_output, opt_options['general']['fname_output'])
             # Remove the fst_vt key from the dictionary and write out the modeling options
             modeling_options['General']['openfast_configuration']['fst_vt'] = {}
-            if not modeling_options['Level3']['from_openfast']:
+            if not modeling_options['OpenFAST']['from_openfast']:
                 wt_initial.write_ontology(wt_opt, froot_out)
             wt_initial.write_options(froot_out)
 
@@ -237,7 +237,7 @@ def run_weis(fname_wt_input, fname_modeling_options, fname_opt_options, geometry
             fileIO.save_data(froot_out, wt_opt)
 
     if MPI and \
-            (modeling_options['Level3']['flag'] or modeling_options['Level2']['flag']) and \
+            (modeling_options['OpenFAST']['flag'] or modeling_options['Level2']['flag']) and \
             (not opt_options['driver']['design_of_experiments']['flag']) and \
             color_i < 1000000:
         # subprocessor ranks spin, waiting for FAST simulations to run.

@@ -41,7 +41,7 @@ class WEISVizInputFileGenerator:
             self.vizInput['userOptions']['optimization']['type'] = 2    # not currently supported.
             warnings.warn("Current WEIS run configuration is not supported by WEIS_Viz")
 
-        elif self.modeling_options['Level3']['flag']:
+        elif self.modeling_options['OpenFAST']['flag']:
             self.vizInput['userOptions']['optimization']['type'] = 3    # OpenFAST, Control
 
         else:
