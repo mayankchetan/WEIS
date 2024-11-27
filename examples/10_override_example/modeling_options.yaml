@@ -32,7 +32,7 @@ WISDEM:
 
 Level1: # Options for WEIS fidelity level 1 = frequency domain
     flag: False
-Level2: # Options for WEIS fidelity level 2 = linear time domain
+OpenFAST_Linear: # Options for WEIS fidelity level 2 = linear time domain
     flag: False
 OpenFAST: # Options for WEIS fidelity level 3 = nonlinear time domain
     flag: False

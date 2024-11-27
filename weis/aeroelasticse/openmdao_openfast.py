@@ -523,7 +523,7 @@ class FASTLoadCases(ExplicitComponent):
         self.of_inumber = -1
         self.sim_idx = -1
 
-        if modopt['Level2']['flag']:
+        if modopt['OpenFAST_Linear']['flag']:
             if MPI:
                 rank = MPI.COMM_WORLD.Get_rank()
                 lin_pkl_dir = os.path.join(self.options['opt_options']['general']['folder_output'], 'lin', 'rank_{}'.format(rank))
@@ -547,7 +547,7 @@ class FASTLoadCases(ExplicitComponent):
         modopt = self.options['modeling_options']
         sys.stdout.flush()
 
-        if modopt['Level2']['flag']:
+        if modopt['OpenFAST_Linear']['flag']:
             self.sim_idx += 1
             ABCD = {
                 'sim_idx' : self.sim_idx,
@@ -616,12 +616,12 @@ class FASTLoadCases(ExplicitComponent):
             summary_stats, extreme_table, DELs, Damage, case_list, case_name, chan_time, dlc_generator  = self.run_FAST(inputs, discrete_inputs, fst_vt)
 
             # Set up linear turbine model
-            if modopt['Level2']['flag']:
+            if modopt['OpenFAST_Linear']['flag']:
                 try: 
                     LinearTurbine = LinearTurbineModel(
                     self.FAST_runDirectory,
                     self.lin_case_name,
-                    nlin=modopt['Level2']['linearization']['NLinTimes'],
+                    nlin=modopt['OpenFAST_Linear']['linearization']['NLinTimes'],
                     reduceControls=True
                     )
                 except FileNotFoundError as e:
@@ -677,7 +677,7 @@ class FASTLoadCases(ExplicitComponent):
                     'OutOps.yaml',OutOps)
 
                 # Set up Level 2 disturbance (simulation or DTQP)
-                if modopt['Level2']['simulation']['flag'] or modopt['Level2']['DTQP']['flag']:
+                if modopt['OpenFAST_Linear']['simulation']['flag'] or modopt['OpenFAST_Linear']['DTQP']['flag']:
                     # Extract disturbance(s)
                     level2_disturbance = []
                     for case in case_list:
@@ -690,10 +690,10 @@ class FASTLoadCases(ExplicitComponent):
                 # Run linear simulation:
 
                 # Get case list, wind inputs should have already been generated
-                if modopt['Level2']['simulation']['flag']:
+                if modopt['OpenFAST_Linear']['simulation']['flag']:
             
-                    if modopt['Level2']['DTQP']['flag']:
-                        raise Exception('Only DTQP or simulation flag can be set to true in Level2 modeling options')
+                    if modopt['OpenFAST_Linear']['DTQP']['flag']:
+                        raise Exception('Only DTQP or simulation flag can be set to true in OpenFAST_Linear modeling options')
 
                     # This is going to use the last discon_in file of the linearization set as the simulation file
                     # Currently fine because openfast is executed (or not executed if overwrite=False) after the file writing
@@ -736,7 +736,7 @@ class FASTLoadCases(ExplicitComponent):
                         # Overwrite timeseries with simulated data instead of saved linearization timeseries
                         chan_time = ct
 
-                elif modopt['Level2']['DTQP']['flag']:
+                elif modopt['OpenFAST_Linear']['DTQP']['flag']:
 
                     summary_stats, extreme_table, DELs, Damage = dtqp_wrapper(
                         LinearTurbine, 
@@ -755,7 +755,7 @@ class FASTLoadCases(ExplicitComponent):
             self.post_process(summary_stats, extreme_table, DELs, Damage, case_list, dlc_generator, chan_time, inputs, discrete_inputs, outputs, discrete_outputs)
             
             # Save AEP value to linear pickle file
-            if modopt['Level2']['flag']:
+            if modopt['OpenFAST_Linear']['flag']:
                 with open(self.lin_pkl_file_name, 'rb') as handle:
                         ABCD_list = pickle.load(handle)
 
@@ -1448,7 +1448,7 @@ class FASTLoadCases(ExplicitComponent):
                 fst_vt['HydroDyn']['RdtnMod'] = 1
                 fst_vt['HydroDyn']['RdtnDT'] = "DEFAULT"
 
-            if fst_vt['HydroDyn']['PotMod'] == 1 and modopt['Level2']['flag'] and modopt['Level1']['runPyHAMS']:
+            if fst_vt['HydroDyn']['PotMod'] == 1 and modopt['OpenFAST_Linear']['flag'] and modopt['Level1']['runPyHAMS']:
                 fst_vt['HydroDyn']['ExctnMod'] = 1
                 fst_vt['HydroDyn']['RdtnMod'] = 1
                 fst_vt['HydroDyn']['RdtnDT'] = "DEFAULT"
@@ -1979,8 +1979,8 @@ class FASTLoadCases(ExplicitComponent):
         
         # FAST wrapper setup
         # JJ->DZ: here is the first point in logic for linearization
-        if modopt['Level2']['flag']:
-            linearization_options               = modopt['Level2']['linearization']
+        if modopt['OpenFAST_Linear']['flag']:
+            linearization_options               = modopt['OpenFAST_Linear']['linearization']
 
             # Use openfast binary until library works
             fastBatch                           = LinearFAST(**linearization_options)

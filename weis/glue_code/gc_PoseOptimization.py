@@ -5,7 +5,7 @@ class PoseOptimizationWEIS(PoseOptimization):
 
     def __init__(self, wt_init, modeling_options, analysis_options):
         
-        self.level_flags = np.array([modeling_options[level]['flag'] for level in ['Level1','Level2','OpenFAST']])
+        self.level_flags = np.array([modeling_options[level]['flag'] for level in ['Level1','OpenFAST_Linear','OpenFAST']])
         # if sum(self.level_flags) > 1:
             # raise Exception('Only one level in WEIS can be enabled at the same time')
 
@@ -527,7 +527,7 @@ class PoseOptimizationWEIS(PoseOptimization):
 
         # Damage constraints
         damage_constraints = self.opt['constraints']['damage']
-        if damage_constraints['tower_base']['flag'] and (self.modeling['Level2']['flag'] or self.modeling['OpenFAST']['flag']):
+        if damage_constraints['tower_base']['flag'] and (self.modeling['OpenFAST_Linear']['flag'] or self.modeling['OpenFAST']['flag']):
             if self.modeling['OpenFAST']['flag'] != True:
                 raise Exception('Please turn on the call to OpenFAST if you are trying to optimize with tower_base damage constraint.')
 

@@ -2857,7 +2857,7 @@ properties:
                         type: boolean
                         default: False
                         description: Whether or not to run xfoil in parallel (requires mpi setup)
-    Level2:
+    OpenFAST_Linear:
         type: object
         default: {}
         description: Options for WEIS fidelity level 2 = linearized time domain (OpenFAST)

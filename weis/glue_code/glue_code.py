@@ -344,7 +344,7 @@ class WindPark(om.Group):
             self.connect('TMDs.stiffness',          'aeroelastic.TMD_stiffness')
             self.connect('TMDs.damping',            'aeroelastic.TMD_damping')
 
-        if modeling_options['OpenFAST']['flag'] or modeling_options['Level2']['flag']:
+        if modeling_options['OpenFAST']['flag'] or modeling_options['OpenFAST_Linear']['flag']:
             self.add_subsystem('aeroelastic',       FASTLoadCases(modeling_options = modeling_options, opt_options = opt_options))
             self.add_subsystem('stall_check_of',    NoStallConstraint(modeling_options = modeling_options))
             
