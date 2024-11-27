@@ -225,7 +225,7 @@ class WindPark(om.Group):
                 self.connect('tune_rosco_ivc.flp_kp_norm',    'sse_tune.tune_rosco.flp_kp_norm')
                 self.connect('tune_rosco_ivc.flp_tau',     'sse_tune.tune_rosco.flp_tau')
 
-        if modeling_options['Level1']['flag']:
+        if modeling_options['RAFT']['flag']:
             self.add_subsystem('raft', RAFT_WEIS(modeling_options = modeling_options, analysis_options=opt_options))
 
             n_span = modeling_options["WISDEM"]["RotorSE"]["n_span"]
@@ -503,7 +503,7 @@ class WindPark(om.Group):
                     self.connect("floatingse.platform_elem_rho", "aeroelastic.platform_elem_rho")
                     self.connect("floatingse.platform_elem_E", "aeroelastic.platform_elem_E")
                     self.connect("floatingse.platform_elem_G", "aeroelastic.platform_elem_G")
-                    if modeling_options['Level1']['flag']:
+                    if modeling_options['RAFT']['flag']:
                         ptfm_data_source = 'raft'
                     else:
                         ptfm_data_source = 'floatingse'

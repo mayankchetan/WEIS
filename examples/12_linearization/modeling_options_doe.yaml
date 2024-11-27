@@ -110,7 +110,7 @@ OpenFAST_Linear:
         DOFs: ['GenDOF','TwFADOF1','PtfmPDOF','PtfmHvDOF', 'PtfmSgDOF']
         NLinTimes: 12
 
-Level1:
+RAFT:
     potential_model_override: 2
 DLC_driver:
     DLCs:

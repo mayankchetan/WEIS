@@ -88,7 +88,7 @@ properties:
         type: object
         default: {}
         description: Options for running WISDEM.  No further options are included in this file.  They are populated using the modeling schema in the WISDEM project in python.
-    Level1:
+    RAFT:
         type: object
         default: {}
         description: Options for WEIS fidelity level 1 = frequency domain (RAFT)

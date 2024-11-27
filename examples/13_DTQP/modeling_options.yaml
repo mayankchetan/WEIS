@@ -113,7 +113,7 @@ OpenFAST_Linear:
         # maxiters: 1500
         # tolerance: 1e-5
 
-Level1:
+RAFT:
     potential_model_override: 2
 
    

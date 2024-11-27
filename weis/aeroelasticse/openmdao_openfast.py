@@ -1376,7 +1376,7 @@ class FASTLoadCases(ExplicitComponent):
             # Use coarse member nodes for HydroDyn
 
             # Simplify members if using potential model only
-            if modopt["Level1"]["potential_model_override"] == 2:
+            if modopt["RAFT"]["potential_model_override"] == 2:
                 joints_xyz = np.array([[0,0,0],[0,0,-1]])
                 N1 = np.array([N1[0]])
                 N2 = np.array([N2[0]])
@@ -1412,10 +1412,10 @@ class FASTLoadCases(ExplicitComponent):
             fst_vt['HydroDyn']['NFillGroups'] = 0
             fst_vt['HydroDyn']['NMGDepths'] = 0
 
-            if modopt["Level1"]["potential_model_override"] == 1:
+            if modopt["RAFT"]["potential_model_override"] == 1:
                 # Strip theory only, no BEM
                 fst_vt['HydroDyn']['PropPot'] = [False] * fst_vt['HydroDyn']['NMembers']
-            elif modopt["Level1"]["potential_model_override"] == 2:
+            elif modopt["RAFT"]["potential_model_override"] == 2:
                 # BEM only, no strip theory
                 fst_vt['HydroDyn']['SimplCd'] = fst_vt['HydroDyn']['SimplCdMG'] = 0.0
                 fst_vt['HydroDyn']['SimplCa'] = fst_vt['HydroDyn']['SimplCaMG'] = 0.0
@@ -1430,7 +1430,7 @@ class FASTLoadCases(ExplicitComponent):
                     # Potential modeling of fixed substructres not supported
                     if modopt['flags']['floating']:
                         idx = modopt['floating']['members']['platform_elem_memid'][k]
-                        PropPotBool[k] = modopt["Level1"]["model_potential"][idx]    
+                        PropPotBool[k] = modopt["RAFT"]["model_potential"][idx]    
                 fst_vt['HydroDyn']['PropPot'] = PropPotBool
 
             if fst_vt['HydroDyn']['NBody'] > 1:
@@ -1448,7 +1448,7 @@ class FASTLoadCases(ExplicitComponent):
                 fst_vt['HydroDyn']['RdtnMod'] = 1
                 fst_vt['HydroDyn']['RdtnDT'] = "DEFAULT"
 
-            if fst_vt['HydroDyn']['PotMod'] == 1 and modopt['OpenFAST_Linear']['flag'] and modopt['Level1']['runPyHAMS']:
+            if fst_vt['HydroDyn']['PotMod'] == 1 and modopt['OpenFAST_Linear']['flag'] and modopt['RAFT']['runPyHAMS']:
                 fst_vt['HydroDyn']['ExctnMod'] = 1
                 fst_vt['HydroDyn']['RdtnMod'] = 1
                 fst_vt['HydroDyn']['RdtnDT'] = "DEFAULT"

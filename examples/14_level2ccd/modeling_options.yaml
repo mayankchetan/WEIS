@@ -112,7 +112,7 @@ OpenFAST_Linear:
         DOFs: ['GenDOF','TwFADOF1','PtfmPDOF']
         NLinTimes: 3
 
-Level1:
+RAFT:
     potential_model_override: 2
 
    

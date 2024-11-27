@@ -34,7 +34,7 @@ class WEISVizInputFileGenerator:
         self.vizInput['userOptions']['optimization'] = {}
         self.vizInput['userOptions']['optimization']['status'] = self.opt_options['driver']['optimization']['flag']
         
-        if self.modeling_options['Level1']['flag']:
+        if self.modeling_options['RAFT']['flag']:
             self.vizInput['userOptions']['optimization']['type'] = 1    # RAFT
 
         elif self.modeling_options['OpenFAST_Linear']['flag']:

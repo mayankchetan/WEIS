@@ -30,7 +30,7 @@ WISDEM:
     BOS:
         flag: True
 
-Level1: # Options for WEIS fidelity level 1 = frequency domain
+RAFT: # Options for WEIS fidelity level 1 = frequency domain
     flag: False
 OpenFAST_Linear: # Options for WEIS fidelity level 2 = linear time domain
     flag: False

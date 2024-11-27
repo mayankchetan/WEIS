@@ -20,7 +20,7 @@ WISDEM:
     BOS:
         flag: True
 
-Level1:
+RAFT:
     flag: False
     potential_model_override: 0
     potential_bem_members: [spar]

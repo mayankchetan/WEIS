@@ -5,7 +5,7 @@ class PoseOptimizationWEIS(PoseOptimization):
 
     def __init__(self, wt_init, modeling_options, analysis_options):
         
-        self.level_flags = np.array([modeling_options[level]['flag'] for level in ['Level1','OpenFAST_Linear','OpenFAST']])
+        self.level_flags = np.array([modeling_options[level]['flag'] for level in ['RAFT','OpenFAST_Linear','OpenFAST']])
         # if sum(self.level_flags) > 1:
             # raise Exception('Only one level in WEIS can be enabled at the same time')
 
@@ -14,13 +14,13 @@ class PoseOptimizationWEIS(PoseOptimization):
         # Set solve component for some optimization constraints, and merit figures (RAFT or openfast)
         if modeling_options['OpenFAST']['flag']:
             self.floating_solve_component = 'aeroelastic'
-        elif modeling_options['Level1']['flag']:
+        elif modeling_options['RAFT']['flag']:
             self.floating_solve_component = 'raft'
         else:
             self.floating_solve_component = 'floatingse'
 
         # aeroelastic won't compute floating period, execpt in special sims
-        if modeling_options['Level1']['flag']:
+        if modeling_options['RAFT']['flag']:
             self.floating_period_solve_component = 'raft'
         else:
             self.floating_period_solve_component = 'floatingse'

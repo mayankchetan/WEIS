@@ -78,7 +78,7 @@ OpenFAST: # Options for WEIS fidelity level 3 = nonlinear time domain
         AddBQuad5: [-8.92e6, 0.0, 0.0, 0.0, 1.68e10, 0.0]
         AddBQuad6: [0.0, 0.0, 0.0, 0.0, 0.0, 4.8e10]
         PotMod: 1
-Level1:
+RAFT:
     flag: False
     potential_model_override: 2
     trim_ballast: 2

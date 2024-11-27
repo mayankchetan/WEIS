@@ -80,10 +80,10 @@ class WindTurbineOntologyPythonWEIS(WindTurbineOntologyPython):
         else:
             bemDir = osp.join(base_run_dir,'BEM')
 
-        self.modeling_options["Level1"]['BEM_dir'] = bemDir
+        self.modeling_options["RAFT"]['BEM_dir'] = bemDir
         if MPI:
             # If running MPI, RAFT won't be able to save designs in parallel
-            self.modeling_options["Level1"]['save_designs'] = False
+            self.modeling_options["RAFT"]['save_designs'] = False
 
 
         # Openfast
@@ -106,14 +106,14 @@ class WindTurbineOntologyPythonWEIS(WindTurbineOntologyPython):
             if not osp.exists( path2dll ):
                 raise NameError("Cannot find DISCON library: "+path2dll)
 
-            # Activate HAMS in Level1 if requested for Level 2 or 3
+            # Activate HAMS in RAFT if requested for OpenFAST
             if self.modeling_options["flags"]["offshore"] or self.modeling_options["OpenFAST"]["from_openfast"]:
-                if self.modeling_options["Level1"]["potential_model_override"] == 2:
+                if self.modeling_options["RAFT"]["potential_model_override"] == 2:
                     self.modeling_options["OpenFAST"]["HydroDyn"]["PotMod"] = 1
-                elif ( (self.modeling_options["Level1"]["potential_model_override"] == 0) and
-                       (len(self.modeling_options["Level1"]["potential_bem_members"]) > 0) ):
+                elif ( (self.modeling_options["RAFT"]["potential_model_override"] == 0) and
+                       (len(self.modeling_options["RAFT"]["potential_bem_members"]) > 0) ):
                     self.modeling_options["OpenFAST"]["HydroDyn"]["PotMod"] = 1
-                elif self.modeling_options["Level1"]["potential_model_override"] == 1:
+                elif self.modeling_options["RAFT"]["potential_model_override"] == 1:
                     self.modeling_options["OpenFAST"]["HydroDyn"]["PotMod"] = 0
                 else:
                     # Keep user defined value of PotMod
@@ -122,23 +122,23 @@ class WindTurbineOntologyPythonWEIS(WindTurbineOntologyPython):
                 if self.modeling_options["OpenFAST"]["HydroDyn"]["PotMod"] == 1:
 
                     # If user requested PotMod but didn't specify any override or members, just run everything
-                    if ( (self.modeling_options["Level1"]["potential_model_override"] == 0) and
-                       (len(self.modeling_options["Level1"]["potential_bem_members"]) == 0) ):
-                        self.modeling_options["Level1"]["potential_model_override"] == 2
+                    if ( (self.modeling_options["RAFT"]["potential_model_override"] == 0) and
+                       (len(self.modeling_options["RAFT"]["potential_bem_members"]) == 0) ):
+                        self.modeling_options["RAFT"]["potential_model_override"] == 2
                         
                     cwd = os.getcwd()
                     weis_dir = osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))
                     potpath = self.modeling_options["OpenFAST"]["HydroDyn"]["PotFile"].replace('.hst','').replace('.12','').replace('.3','').replace('.1','')
                     if ( (len(potpath) == 0) or (potpath.lower() in ['unused','default','none']) ):
                         
-                        self.modeling_options['Level1']['flag'] = True
+                        self.modeling_options['RAFT']['flag'] = True
                         self.modeling_options["OpenFAST"]["HydroDyn"]["PotFile"] = osp.join(bemDir,'Output','Wamit_format','Buoy')
                         
 
                     else:
-                        if self.modeling_options['Level1']['runPyHAMS']:
+                        if self.modeling_options['RAFT']['runPyHAMS']:
                             print('Found existing potential model: {}\n    - Trying to use this instead of running PyHAMS.'.format(potpath))
-                            self.modeling_options['Level1']['runPyHAMS'] = False
+                            self.modeling_options['RAFT']['runPyHAMS'] = False
                         if osp.exists( potpath+'.1' ):
                             self.modeling_options["OpenFAST"]["HydroDyn"]["PotFile"] = osp.realpath(potpath)
                         elif osp.exists( osp.join(cwd, potpath+'.1') ):
@@ -159,18 +159,18 @@ class WindTurbineOntologyPythonWEIS(WindTurbineOntologyPython):
         
         # RAFT
         if self.modeling_options["flags"]["floating"]:
-            bool_init = True if self.modeling_options["Level1"]["potential_model_override"]==2 else False
-            self.modeling_options["Level1"]["model_potential"] = [bool_init] * self.modeling_options["floating"]["members"]["n_members"]
+            bool_init = True if self.modeling_options["RAFT"]["potential_model_override"]==2 else False
+            self.modeling_options["RAFT"]["model_potential"] = [bool_init] * self.modeling_options["floating"]["members"]["n_members"]
 
-            if self.modeling_options["Level1"]["potential_model_override"] == 0:
-                for k in self.modeling_options["Level1"]["potential_bem_members"]:
+            if self.modeling_options["RAFT"]["potential_model_override"] == 0:
+                for k in self.modeling_options["RAFT"]["potential_bem_members"]:
                     idx = self.modeling_options["floating"]["members"]["name"].index(k)
-                    self.modeling_options["Level1"]["model_potential"][idx] = True
+                    self.modeling_options["RAFT"]["model_potential"][idx] = True
         elif self.modeling_options["flags"]["offshore"]:
-            self.modeling_options["Level1"]["model_potential"] = [False]*1000
+            self.modeling_options["RAFT"]["model_potential"] = [False]*1000
             
         # ROSCO
-        self.modeling_options['ROSCO']['flag'] = (self.modeling_options['Level1']['flag'] or
+        self.modeling_options['ROSCO']['flag'] = (self.modeling_options['RAFT']['flag'] or
                                                   self.modeling_options['OpenFAST_Linear']['flag'] or
                                                   self.modeling_options['OpenFAST']['flag'])
         
