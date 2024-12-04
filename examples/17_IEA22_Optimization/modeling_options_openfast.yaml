@@ -49,7 +49,7 @@ WISDEM:
     BOS:
         flag: True
 
-Level3: # Options for WEIS fidelity level 3 = nonlinear time domain
+OpenFAST: # Options for WEIS fidelity level 3 = nonlinear time domain
     flag: True
     simulation:
         DT: 0.01
@@ -94,7 +94,7 @@ Level3: # Options for WEIS fidelity level 3 = nonlinear time domain
     #     PotMod: 1
         # WaveMod: 0
         # PotFile: examples/01_aeroelasticse/OpenFAST_models/IEA-15-240-RWT/IEA-15-240-RWT-UMaineSemi/HydroData/IEA-15-240-RWT-UMaineSemi
-Level1:
+RAFT:
     flag: True
     potential_model_override: 0
     trim_ballast: 2
