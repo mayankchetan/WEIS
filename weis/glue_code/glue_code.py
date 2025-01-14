@@ -152,7 +152,7 @@ class WindPark(om.Group):
                 self.connect("blade.high_level_blade_props.prebendTip", 'sse_tune.precurveTip')
                 self.connect("blade.high_level_blade_props.presweep", 'sse_tune.presweep')
                 self.connect("blade.high_level_blade_props.presweepTip", 'sse_tune.presweepTip')
-                self.connect('xf.flap_angles',                  'sse_tune.airfoils_Ctrl')
+                self.connect('xf.flap_angles',                  'sse_tune.airfoils_UserProp')
                 self.connect('control.minOmega',                'sse_tune.omega_min')
                 self.connect('control.rated_TSR',               'sse_tune.tsr_operational')
                 self.connect('configuration.rated_power',       'sse_tune.rated_power')
@@ -558,7 +558,7 @@ class WindPark(om.Group):
                 self.connect('sse_tune.aeroperf_tables.Cp',     'aeroelastic.Cp_aero_table')
                 self.connect('sse_tune.aeroperf_tables.Ct',     'aeroelastic.Ct_aero_table')
                 self.connect('sse_tune.aeroperf_tables.Cq',     'aeroelastic.Cq_aero_table')
-                self.connect('xf.flap_angles',                  'aeroelastic.airfoils_Ctrl')
+                self.connect('xf.flap_angles',                  'aeroelastic.airfoils_UserProp')
 
                 if modeling_options['flags']['mooring']:
                     self.connect("mooring.line_diameter", "aeroelastic.line_diameter")
@@ -880,8 +880,8 @@ class WindPark(om.Group):
             # Inputs to plantfinancese from wt group
             if not modeling_options['OpenFAST']['from_openfast']:
 
-                # Connect computed AEP only if DLC 1.1 is used, otherwise use rotorse
-                if modeling_options['DLC_driver']['n_ws_dlc11'] > 0:
+                # Connect computed AEP only if DLC 1.1 or AEP is used, otherwise use rotorse
+                if modeling_options['DLC_driver']['n_ws_aep'] > 0:
                     self.connect('aeroelastic.AEP', 'financese_post.turbine_aep')
                 else:
                     self.connect('rotorse.rp.AEP', 'financese_post.turbine_aep')
@@ -906,7 +906,7 @@ class WindPark(om.Group):
                 self.connect('costs.wake_loss_factor',  'financese_post.wake_loss_factor')
                 self.connect('costs.fixed_charge_rate', 'financese_post.fixed_charge_rate')
 
-            if modeling_options['DLC_driver']['n_ws_dlc11'] > 0:
+            if modeling_options['DLC_driver']['n_ws_aep'] > 0:
                 self.connect('aeroelastic.AEP',     'outputs_2_screen_weis.aep')
 
             # Connections to outputs to screen
