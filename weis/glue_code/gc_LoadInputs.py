@@ -1,6 +1,6 @@
 import os
 import os.path as osp
-import shutil
+import copy, logging
 import numpy as np
 
 from rosco import discon_lib_path
@@ -12,6 +12,7 @@ from openmdao.utils.mpi import MPI
 from rosco.toolbox.inputs.validation import load_rosco_yaml
 from wisdem.inputs import load_yaml
 
+logger = logging.getLogger("wisdem/weis")
 
 def update_options(options,override):
     for key, value in override.items():
@@ -41,6 +42,9 @@ class WindTurbineOntologyPythonWEIS(WindTurbineOntologyPython):
         self.wt_init          = sch.load_geometry_yaml(fname_input_wt)
         self.analysis_options = sch.load_analysis_yaml(fname_input_analysis)
         self.analysis_options['fname_input_analysis'] = fname_input_analysis
+
+        # Update options to maintain some backwards compatibility
+        self.backwards_compatibility()
 
         if modeling_override:
             update_options(self.modeling_options, modeling_override)
@@ -315,3 +319,22 @@ class WindTurbineOntologyPythonWEIS(WindTurbineOntologyPython):
         # Override the WISDEM version to ensure that the WEIS options files are written instead
         sch.write_modeling_yaml(self.modeling_options, fname_output)
         sch.write_analysis_yaml(self.analysis_options, fname_output)
+
+
+    def backwards_compatibility(self):
+
+        modopts_no_defaults = load_yaml(self.modeling_options['fname_input_modeling'])
+
+        if 'Level1' in modopts_no_defaults:
+            self.modeling_options['RAFT'] = copy.deepcopy(self.modeling_options['Level1'])
+            logger.warning('Level1 is no longer a WEIS modeling option.  Please use RAFT instead.  Level1 will be depreciated in a future release.')
+
+        if 'Level2' in modopts_no_defaults:
+            self.modeling_options['OpenFAST_Linear'] = copy.deepcopy(self.modeling_options['Level2'])
+            logger.warning('Level2 is no longer a WEIS modeling option.  Please use OpenFAST_Linear instead.  Level2 will be depreciated in a future release.')
+
+        if 'Level3' in modopts_no_defaults:
+            self.modeling_options['OpenFAST'] = copy.deepcopy(self.modeling_options['Level3'])
+            logger.warning('Level3 is no longer a WEIS modeling option.  Please use OpenFAST instead.  Level3 will be depreciated in a future release.')
+
+

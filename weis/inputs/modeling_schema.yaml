@@ -96,7 +96,7 @@ properties:
         type: object
         default: {}
         description: Options for running WISDEM.  No further options are included in this file.  They are populated using the modeling schema in the WISDEM project in python.
-    RAFT:
+    RAFT: &raft_modopt
         type: object
         default: {}
         description: Options for WEIS fidelity level 1 = frequency domain (RAFT)
@@ -178,11 +178,11 @@ properties:
                 type: boolean
                 default: True
                 description: Flag to run pyHAMS
-    OpenFAST: &ofmodopt
+    OpenFAST: &of_modopt
         type: object
         default: {}
         description: Options for running OpenFAST.  No further options are included in this file.  They are populated using the openfast schema.
-    OpenFAST_Linear:
+    OpenFAST_Linear: &of_linear_modopt
         type: object
         default: {}
         description: Options for WEIS fidelity level 2 = linearized time domain (OpenFAST)
@@ -356,6 +356,10 @@ properties:
             #MoorDyn: *ofmoordyn
             #ServoDyn: *ofservodyn
             #outlist: *ofoutlist
+    # Add pointers to new Level 1,2,3 for backwards compatibility
+    Level1: *raft_modopt
+    Level2: *of_linear_modopt
+    Level3: *of_modopt
     DLC_driver:
         type: object
         default: {}
