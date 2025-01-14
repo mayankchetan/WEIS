@@ -1856,18 +1856,6 @@ properties:
                         type: number
                         description: The rotation about zt of the body reference frame(s) from xt/yt (degrees) [1 to NBody] [only used when PotMod=1]
                         default: 0
-                    PtfmVol0:
-                        type: number
-                        description: Displaced volume of water when the body is in its undisplaced position (m^3) [1 to NBody] [only used when PotMod=1; USE THE SAME VALUE COMPUTED BY WAMIT AS OUTPUT IN THE .OUT FILE!]
-                        default: 0
-                    PtfmCOBxt:
-                        type: number
-                        description: The xt offset of the center of buoyancy (COB) from (0,0) (meters) [1 to NBody] [only used when PotMod=1]
-                        default: 0
-                    PtfmCOByt:
-                        type: number
-                        description: The yt offset of the center of buoyancy (COB) from (0,0) (meters) [1 to NBody] [only used when PotMod=1]
-                        default: 0
                     WaveDisp:
                         type: integer
                         default: 1
