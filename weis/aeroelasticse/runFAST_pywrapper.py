@@ -8,10 +8,12 @@ import os
 import shutil
 import platform
 import multiprocessing as mp
+import glob
 
 from openfast_io.FAST_reader import InputReader_OpenFAST
 from openfast_io.FAST_writer import InputWriter_OpenFAST
 from weis.aeroelasticse.FAST_wrapper import FAST_wrapper, Turbsim_wrapper, IEC_CoherentGusts
+from weis.aeroelasticse.cloud_wrapper import Inductiva_wrapper
 from weis.aeroelasticse.calculated_channels import calculate_channels
 from pCrunch.io import OpenFASTOutput, OpenFASTBinary, OpenFASTAscii
 from pCrunch import LoadsAnalysis, FatigueParams
@@ -20,7 +22,8 @@ from weis.aeroelasticse.openfast_library import FastLibAPI
 import numpy as np
 
 # Realpath will resolve symlinks
-of_path = os.path.realpath( shutil.which('openfast') )
+# of_path = os.path.realpath( shutil.which('openfast') )
+of_path = os.path.realpath( '/home/mayank/development/env/weis-inductiva/bin/openfast' )
 bin_dir  = os.path.dirname(of_path)
 lib_dir  = os.path.abspath( os.path.join(os.path.dirname(bin_dir), 'lib') )
 
@@ -126,6 +129,7 @@ class runFAST_pywrapper(object):
         self.channels           = {}     # dictionary of output channels to change
         self.keep_time          = False
         self.use_exe            = False  # use openfast executable instead of library, helpful for debugging sometimes
+        self.use_cloud          = False  # use cloud computing
         self.goodman            = False
         self.magnitude_channels = magnitude_channels_default
         self.fatigue_channels   = fatigue_channels_default
@@ -135,6 +139,8 @@ class runFAST_pywrapper(object):
         self.write_stdout       = False
         
         self.overwrite_outfiles = True   # True: existing output files will be overwritten, False: if output file with the same name already exists, OpenFAST WILL NOT RUN; This is primarily included for code debugging with OpenFAST in the loop or for specific Optimization Workflows where OpenFAST is to be run periodically instead of for every objective function anaylsis
+
+        self.cloudConfig        = {}
 
         # Optional population class attributes from key word arguments
         for (k, w) in kwargs.items():
@@ -213,6 +219,104 @@ class runFAST_pywrapper(object):
             # if save_file: write_fast
             os.chdir(orig_dir)
 
+            if not self.keep_time: output_dict = None
+
+        elif self.use_cloud: # use cloud computing
+            wrapper = Inductiva_wrapper()
+
+            # we need significant file manipulation to get the cloud to work
+            try:
+                # Create cloud directory
+                cloud_dir = os.path.join(self.FAST_runDirectory, f'cloud_{writer.FAST_namingOut}')
+                os.makedirs(cloud_dir, exist_ok=True)  # makedirs is generally preferred over mkdir
+                
+                # Move all matching files
+                source_pattern = os.path.join(self.FAST_runDirectory, f"{writer.FAST_InputFileOut}*")
+                for file_path in glob.glob(source_pattern):
+                    shutil.move(file_path, cloud_dir)
+
+                # Move the contents in the Airfoil folder
+                source_pattern = os.path.join(self.FAST_runDirectory, "Airfoils", f"{writer.FAST_InputFileOut}*")
+                for file_path in glob.glob(source_pattern):
+                    shutil.move(file_path, os.path.join(cloud_dir, "Airfoils"))
+
+                # Move the contents from the wind folder
+                for wind_file_key in ['FileName_Uni', 'FileName_BTS']:
+                    wind_file_path = os.path.join(self.FAST_runDirectory, writer.fst_vt['InflowWind'].get(wind_file_key, ''))
+                    if os.path.exists(wind_file_path):
+                        shutil.move(wind_file_path, os.path.join(cloud_dir, "wind"))
+
+                # We need to move the controller file to the new directory
+                # This is a bit tricky because the controllers have to be statically linked to avoid library issues
+                # within the docker container, approach needs to be refined
+                controller_file_path = os.path.join(self.FAST_runDirectory, writer.fst_vt['ServoDyn'].get('DLL_FileName', ''))
+                if os.path.exists(controller_file_path):
+                    shutil.move(controller_file_path, cloud_dir)
+
+            except Exception as e:
+                print(f"Error during file operations: {str(e)}")
+
+
+            # Run FAST
+            wrapper.FAST_InputFile = self.FAST_namingOut+'.fst'
+            wrapper.FAST_directory = cloud_dir
+
+            wrapper.allow_fails = self.allow_fails
+            wrapper.fail_value  = self.fail_value
+            wrapper.write_stdout = self.write_stdout
+
+            FAST_Output     = os.path.join(wrapper.FAST_directory, wrapper.FAST_InputFile[:-3]+'outb')
+            FAST_Output_txt = os.path.join(wrapper.FAST_directory, wrapper.FAST_InputFile[:-3]+'out')
+
+            #check if OpenFAST is set not to overwrite existing output files, TODO: move this further up in the workflow for minor computation savings
+            if self.overwrite_outfiles or (not self.overwrite_outfiles and not (os.path.exists(FAST_Output) or os.path.exists(FAST_Output_txt))):
+                failed = wrapper.execute()
+                if failed:
+                    print('OpenFAST Failed! Please check the run logs.')
+                    if self.allow_fails:
+                        print(f'OpenFAST failures are allowed. All outputs set to {self.fail_value}')
+                    else:
+                        raise Exception('OpenFAST Failed! Please check the run logs.')
+            else:
+                failed = False
+                print('OpenFAST not executed: Output file "%s" already exists. To overwrite this output file, set "overwrite_outfiles = True".'%FAST_Output)
+
+            if not failed:
+                if os.path.exists(FAST_Output):
+                    output_init = OpenFASTBinary(FAST_Output, magnitude_channels=self.magnitude_channels)
+                elif os.path.exists(FAST_Output_txt):
+                    output_init = OpenFASTAscii(FAST_Output_txt, magnitude_channels=self.magnitude_channels)
+                    
+                output_init.read()
+
+                # Make output dict
+                output_dict = {}
+                for i, channel in enumerate(output_init.channels):
+                    output_dict[channel] = output_init.df[channel].to_numpy()
+
+                # Add channel to indicate failed run
+                output_dict['openfast_failed'] = np.zeros(len(output_dict[channel]))
+
+                # Calculated channels
+                calculate_channels(output_dict, self.fst_vt)
+
+                # Re-make output
+                output = OpenFASTOutput.from_dict(output_dict, self.FAST_namingOut)
+            
+            else: # fill with -9999s
+                output_dict = {}
+                output_dict['Time'] = np.arange(self.fst_vt['Fst']['TStart'],self.fst_vt['Fst']['TMax'],self.fst_vt['Fst']['DT'])
+                for module in self.fst_vt['outlist']:
+                    for channel in self.fst_vt['outlist'][module]:
+                        if self.fst_vt['outlist'][module][channel]:
+                            output_dict[channel] = np.full(len(output_dict['Time']),fill_value=self.fail_value, dtype=np.uint8) 
+
+                # Add channel to indicate failed run
+                output_dict['openfast_failed'] = np.ones(len(output_dict['Time']), dtype=np.uint8)
+
+                output = OpenFASTOutput.from_dict(output_dict, self.FAST_namingOut, magnitude_channels=self.magnitude_channels)
+
+            # clear dictionary if we're not keeping time
             if not self.keep_time: output_dict = None
 
         else: # use executable
@@ -320,11 +424,14 @@ class runFAST_pywrapper_batch(object):
         self.fatigue_channels   = fatigue_channels_default
         self.la                 = None
         self.use_exe            = False
+        self.use_cloud          = False
         self.allow_fails        = False
         self.fail_value         = 9999
         self.write_stdout       = False
         
         self.post               = None
+
+        self.cloudConfig        = {}
 
     def init_crunch(self):
         if self.la is None:
@@ -355,6 +462,7 @@ class runFAST_pywrapper_batch(object):
             case_data['channels']           = self.channels
             case_data['overwrite_outfiles'] = self.overwrite_outfiles
             case_data['use_exe']            = self.use_exe
+            case_data['use_cloud']          = self.use_cloud
             case_data['allow_fails']        = self.allow_fails
             case_data['fail_value']         = self.fail_value
             case_data['write_stdout']       = self.write_stdout
@@ -428,6 +536,48 @@ class runFAST_pywrapper_batch(object):
 
         return summary_stats, extreme_table, DELs, Damage, ct
 
+    def run_cloud(self, cloudConfig = None):
+        # Run in parallel with cloud computing
+        import inductiva
+
+        if not os.path.exists(self.FAST_runDirectory):
+            os.makedirs(self.FAST_runDirectory)
+
+        self.init_crunch()
+
+        # Need to allocate the inductiva resources
+        cloud_machine = inductiva.resources.ElasticMachineGroup(
+            machine_type=cloudConfig.machine_type,
+            spot=True,
+            min_machines=1,
+            max_machines=cloudConfig.max_machines)
+        
+        # Also creating the OpenFAST project to allocate runs and collect data
+        openfast_project = inductiva.projects.Project(
+                        name=os.path.dirname(self.FAST_runDirectory), # this needs to be figured out, can be the iteration number
+                        append=True)
+        
+        openfast_project.open()
+
+        case_data_all = self.create_case_data()
+
+        ss = {}
+        et = {}
+        dl = {}
+        dam = {}
+        ct = []
+        for c in case_data_all:
+            _name, _ss, _et, _dl, _dam, _ct = evaluate(c)
+            ss[_name] = _ss
+            et[_name] = _et
+            dl[_name] = _dl
+            dam[_name] = _dam
+            ct.append(_ct)
+            
+        summary_stats, extreme_table, DELs, Damage = self.la.post_process(ss, et, dl, dam)
+
+        return summary_stats, extreme_table, DELs, Damage, ct
+
     def run_mpi(self, mpi_comm_map_down):
 
         # Run in parallel with mpi
@@ -491,7 +641,9 @@ def evaluate(indict):
     known_keys = ['case', 'case_name', 'FAST_exe', 'FAST_lib', 'FAST_runDirectory',
                   'FAST_InputFile', 'FAST_directory', 'read_yaml', 'FAST_yamlfile_in', 'fst_vt',
                   'write_yaml', 'FAST_yamlfile_out', 'channels', 'overwrite_outfiles', 'keep_time',
-                  'goodman','magnitude_channels','fatigue_channels','post','use_exe','allow_fails','fail_value', 'write_stdout']
+                  'goodman','magnitude_channels','fatigue_channels','post','use_exe','allow_fails','fail_value', 'write_stdout'
+                  'use_cloud',
+                  ]
     
     fast = runFAST_pywrapper()
     for k in indict:

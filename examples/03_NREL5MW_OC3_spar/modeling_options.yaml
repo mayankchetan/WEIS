@@ -3,6 +3,13 @@ General:
     openfast_configuration:
         OF_run_fst: NREL5MW_OC3_spar
         use_exe: True
+        use_cloud: True
+
+    cloud_configuration:
+        interface: inductiva
+        cloud: GCP
+        machine_type: n2-highcpu-2
+        max_machines: 50
 
 WISDEM:
     RotorSE:

@@ -2013,6 +2013,9 @@ class FASTLoadCases(ExplicitComponent):
             fastBatch.case_list                 = case_list
             fastBatch.case_name_list            = case_name     
             fastBatch.use_exe                   = modopt['General']['openfast_configuration']['use_exe']
+            fastBatch.use_cloud                 = modopt['General']['openfast_configuration']['use_cloud']
+        
+        fastBatch.cloudConfig               = modopt['General']['openfast_configuration']['cloud_configuration']
         
         fastBatch.channels          = channels
         fastBatch.FAST_InputFile    = self.FAST_InputFile
@@ -2156,6 +2159,10 @@ class FASTLoadCases(ExplicitComponent):
         # Run FAST
         if self.mpi_run and not self.options['opt_options']['driver']['design_of_experiments']['flag']:
             summary_stats, extreme_table, DELs, Damage, chan_time = fastBatch.run_mpi(self.mpi_comm_map_down)
+
+        elif modopt['Gereral']['openfast_configuration']['use_cloud']:
+            summary_stats, extreme_table, DELs, Damage, chan_time = fastBatch.run_cloud(modopt['General']['cloud_configuration'])
+
         else:
             if self.cores == 1:
                 summary_stats, extreme_table, DELs, Damage, chan_time = fastBatch.run_serial()
