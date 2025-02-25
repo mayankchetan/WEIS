@@ -27,6 +27,7 @@ dependencies:
     - dearpygui
     - openfast_io
     - marmot-agents
+    - inductiva
 # Needs to be done outside of environment file:
 #  - m2w64-toolchain # [win]
 #  - libpython # [win]

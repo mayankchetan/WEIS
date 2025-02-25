@@ -2015,7 +2015,7 @@ class FASTLoadCases(ExplicitComponent):
             fastBatch.use_exe                   = modopt['General']['openfast_configuration']['use_exe']
             fastBatch.use_cloud                 = modopt['General']['openfast_configuration']['use_cloud']
         
-        fastBatch.cloudConfig               = modopt['General']['openfast_configuration']['cloud_configuration']
+        fastBatch.cloudConfig               = modopt['General']['cloud_configuration']
         
         fastBatch.channels          = channels
         fastBatch.FAST_InputFile    = self.FAST_InputFile
@@ -2160,7 +2160,7 @@ class FASTLoadCases(ExplicitComponent):
         if self.mpi_run and not self.options['opt_options']['driver']['design_of_experiments']['flag']:
             summary_stats, extreme_table, DELs, Damage, chan_time = fastBatch.run_mpi(self.mpi_comm_map_down)
 
-        elif modopt['Gereral']['openfast_configuration']['use_cloud']:
+        elif modopt['General']['openfast_configuration']['use_cloud']:
             summary_stats, extreme_table, DELs, Damage, chan_time = fastBatch.run_cloud(modopt['General']['cloud_configuration'])
 
         else:

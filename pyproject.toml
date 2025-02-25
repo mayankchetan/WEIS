@@ -55,6 +55,7 @@ dependencies = [
   "scipy",
   "smt",
   "wisdem",
+  "inductiva",
 ]
 
 # List additional groups of dependencies here (e.g. development
