@@ -22,7 +22,7 @@ wisdemBranch="master"
 wisdemRepoOverride=""
 wisdemDirName="wisdem"
 
-raftBranch="main"
+raftBranch="master"
 raftRepoOverride=""
 raftDirName="raft"
 
@@ -125,13 +125,13 @@ help_message() {
     echo "    -cray, --cray                                    Use Cray specific flags for OpenFAST build."
     echo ""
     echo "  Example 1:"
-    echo "    ./kestrelInstall.sh -n my_weis_env"
+    echo "    ./kestrel_install.sh -n my_weis_env"
     echo ""
     echo "  Example 2:"
-    echo "    ./kestrelInstall.sh -p /path/to/env"
+    echo "    ./kestrel_install.sh -p /path/to/env"
     echo ""
     echo "  Example 3:"
-    echo "    ./kestrelInstall.sh -p /path/to/env -raft -wisdem"
+    echo "    ./kestrel_install.sh -p /path/to/env -raft -wisdem"
     echo ""
     exit 1
 }
