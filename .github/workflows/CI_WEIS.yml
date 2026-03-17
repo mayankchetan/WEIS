@@ -57,8 +57,8 @@ jobs:
       
       # - name: feature branches of other codes
       #   run: |
-      #     conda remove --force openraft
-      #     pip install https://github.com/yqliaohk/RAFT/archive/meshing_update.zip
+      #     conda remove --force wisdem
+      #     pip install https://github.com/NLRWindSystems/WISDEM/archive/develop.zip
 
       # Don't delete after this
 
