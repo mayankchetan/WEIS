@@ -11,10 +11,11 @@ dependencies:
   - nlopt
   - numpydoc
   - numpy
-  - openfast>=4.1.0
-  - openfast-io>=4.1.0
-  - pyopenfast>=4.1.0
+  - openfast==4.2
+  - openfast-io==4.2
+  - pyopenfast==4.2
   - openraft>=2.0.3
+  - openmdao==3.42
   - osqp  
   - pcrunch>=2.1.5
   - pip
